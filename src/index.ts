@@ -1,6 +1,6 @@
 // I hate typescript so much why did i think of this?
 // I'm not sure if this is the best way to do this but it works
-// Goofy ass types are not my thing
+// Goofy types are not my thing
 // I miss javascript
 import axios from 'axios';
 /**
@@ -12,7 +12,7 @@ import axios from 'axios';
 * const BrawlhallaApi = require('brawl.js').default
 * // ES:
 * import BrawlhallaApi from 'brawl.js'
-* const client = new BrawlhallaApi(API_KEY) // if you want to add another paramater for the region
+* const bh = new BrawlhallaApi(API_KEY, "eu") // "eu" is the region, default region is "all", no need to add the region parameter
 * ```
 */
 export default class BrawlhallaApi {
@@ -61,7 +61,7 @@ export default class BrawlhallaApi {
 * const BrawlhallaApi = require('brawl.js').default
 * // ES:
 * import BrawlhallaApi from 'brawl.js'
-* const client = new BrawlhallaApi(API_KEY) // if you want to add another paramater for the region
+* const bh = new BrawlhallaApi(API_KEY, "eu") // "eu" is the region, default region is "all", no need to add the region parameter
 * ```
 */
   constructor(API_KEY: string, region: string = "all") {

@@ -62,7 +62,7 @@ Returns: an array of the top `mode` players.
 const player = await bh.getRankedByName("ChdML", undefined, undefined, true)
 console.log(player)
 ```
-
+Returns: an array of the players with the name `name`.
 ## .getPlayerStats(id)
 `id`: the `brawlhalla_id` of the player
 ```js
@@ -70,7 +70,7 @@ const player = await bh.getPlayerStats("5156845")
 console.log(player)
 ```
 
-Returns: an object containing the clan info.
+Returns: an object containing the player stats info.
 
 ## .getPlayerRankedStats(id)
 `id`: the `brawlhalla_id` of the player
@@ -79,7 +79,7 @@ const player = await bh.getPlayerRankedStats("5156845")
 console.log(player)
 ```
 
-Returns: an object containing the clan info.
+Returns: an object containing the players ranked stats.
 
 ## .getPlayerBySteam64ID(id)
 `id`: the steam64 id of the player
