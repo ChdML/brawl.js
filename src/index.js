@@ -38,7 +38,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 exports.__esModule = true;
 // I hate typescript so much why did i think of this?
 // I'm not sure if this is the best way to do this but it works
-// Goofy ass types are not my thing
+// Goofy types are not my thing
 // I miss javascript
 var axios_1 = require("axios");
 /**
@@ -50,7 +50,7 @@ var axios_1 = require("axios");
 * const BrawlhallaApi = require('brawl.js').default
 * // ES:
 * import BrawlhallaApi from 'brawl.js'
-* const client = new BrawlhallaApi(API_KEY) // if you want to add another paramater for the region
+* const bh = new BrawlhallaApi(API_KEY, "eu") // "eu" is the region, default region is "all", no need to add the region parameter
 * ```
 */
 var BrawlhallaApi = /** @class */ (function () {
@@ -62,7 +62,7 @@ var BrawlhallaApi = /** @class */ (function () {
   * const BrawlhallaApi = require('brawl.js').default
   * // ES:
   * import BrawlhallaApi from 'brawl.js'
-  * const client = new BrawlhallaApi(API_KEY) // if you want to add another paramater for the region
+  * const bh = new BrawlhallaApi(API_KEY, "eu") // "eu" is the region, default region is "all", no need to add the region parameter
   * ```
   */
     function BrawlhallaApi(API_KEY, region) {

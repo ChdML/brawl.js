@@ -142,3 +142,6 @@ Returns: the fetched result.
 | `404`   | Not Found/Bad Request - The requested resource was not found, or required parameters are missing or possibly invalid        |
 | `429`   | Too Many Requests – API key has hit the rate limit. |
 | `503`   | Service Unavailable – We’re temporarily offline for maintenance. Please try again later. |
+
+# Why I made this?
+I made this so I could learn how to use the Brawlhalla API and I hope it can be useful for other people. If you have any questions, feel free to ask on the issues page, or add me on discord(Chad#0008).
