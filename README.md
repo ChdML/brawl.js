@@ -1,7 +1,5 @@
 # brawl.js (Brawlhalla API Wrapper)
-`brawl.js` is a wrapper for the [Brawlhalla API](https://dev.brawlhalla.com). it has many methods and built in filters so you dont have to filter the fetched data yourself.\
-for example, you can fetch a player's name with one line of code instead of having to fetch manually, filtering results and etc.
-
+`brawl.js` is a wrapper for the [Brawlhalla API](https://dev.brawlhalla.com). it has many useful methods, check it out yourself.
 ## Installation
 Yarn:
 ```
