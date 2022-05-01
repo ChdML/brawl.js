@@ -1,5 +1,6 @@
-# brawl.js (Brawlhalla API Wrapper)
-`brawl.js` is a wrapper for the [Brawlhalla API](https://dev.brawlhalla.com). it has many useful methods, check it out yourself.
+# Brawl.js 
+Brawl.js is a wrapper for the Brawlhalla API, with many useful methods, check it out!
+
 ## Installation
 Yarn:
 ```
@@ -23,7 +24,7 @@ const bh = new BrawlhallaApi(API_KEY, "eu") // "eu" is the region, default regio
 ```
 
 ## Methods
-For some methods there is an optional region parameter, if you don't add a parameter, the default region would be `all`, you can also set a region without having to add a region to each method paramater, example:
+For some methods there is an optional region parameter, if you don't add a parameter, the default region would be `all`, you can also set a region without having to add a region to each method parameter, example:
 ```js
 const bh = new BrawlhallaApi(API_KEY, "eu") // this would use the "eu" region
 ```
