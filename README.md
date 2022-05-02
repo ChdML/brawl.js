@@ -143,4 +143,16 @@ Returns: the fetched result.
 | `503`   | Service Unavailable – We’re temporarily offline for maintenance. Please try again later. |
 
 # Why I made this?
-I made this so I could learn how to use the Brawlhalla API and I hope it can be useful for other people. If you have any questions, feel free to ask on the issues page, or add me on discord(Chad#0008).
+I made this so I could learn how to use the Brawlhalla API and I hope it can be useful for other people. If you have any questions, feel free to ask on the issues page.
+
+# Changelog:
+
+# 0.1.9:
+Added the following methods:
+| Method | Parameters | Description |
+| ----------- | ----------- | ----------- |
+| `getGlory`  | `best_rating`, `wins`     | Returns an object of the wins, best rating, and total glory |
+| `getGloryFromBestRating`  | `best_rating`     | Returns a number of the glory from best rating |
+| `getGloryFromWins`  | `wins`     | Returns a number of the glory from wins |
+| `getEloReset`  | `elo`     | Returns a number of the rank elo reset |
+| `getTeamEloReset`  | `elo`     | Returns a number of the team/legend elo reset |

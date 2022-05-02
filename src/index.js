@@ -113,7 +113,7 @@ var BrawlhallaApi = /** @class */ (function () {
   * @example
   * ```js
   * // Get player's stats
-  * let player = await BrawlhallaApi.getPlayerStats(1).catch((err) => console.log("Player does not exist!"))
+  * let player = await bh.getPlayerStats(1).catch((err) => console.log("Player does not exist!"))
   * console.log(player)
   * // {
   * // "brawlhalla_id": 1,
@@ -152,7 +152,7 @@ var BrawlhallaApi = /** @class */ (function () {
   * @example
   * ```js
   * // Get player's ranked stats
-  * let player = await BrawlhallaApi.getPlayerRankedStats(1).catch((err) => console.log("Player does not exist!"))
+  * let player = await bh.getPlayerRankedStats(1).catch((err) => console.log("Player does not exist!"))
   * console.log(player)
   * // {
   * // "brawlhalla_id": 1,
@@ -195,7 +195,7 @@ var BrawlhallaApi = /** @class */ (function () {
   * @example
   * ```js
   * // Get all players with the name "ChdML"
-  * let players = await BrawlhallaApi.getByName("ChdML").catch((err) => console.log("Player does not exist!"))
+  * let players = await bh.getByName("ChdML").catch((err) => console.log("Player does not exist!"))
   * console.log(players)
   * // [
   * // {name: "ChdML", ...},
@@ -254,7 +254,7 @@ var BrawlhallaApi = /** @class */ (function () {
   * @example
   * ```js
   * // Get page 1 of the leaderboard, if no page was provided it would automatically fetch page 1
-  * let onevoneLeaderboard = await BrawlhallaApi.get1v1Rankings().catch((err) => console.log("Error occurred!", err))
+  * let onevoneLeaderboard = await bh.get1v1Rankings().catch((err) => console.log("Error occurred!", err))
   * console.log(onevoneLeaderboard)
   * // [
   * // {rank: 1, ...},
@@ -264,7 +264,7 @@ var BrawlhallaApi = /** @class */ (function () {
   * @example
   * ```js
   * // get page 2
-  * let onevoneLeaderboard2 = await BrawlhallaApi.get1v1Rankings(2).catch((err) => console.log("Error occurred!", err))
+  * let onevoneLeaderboard2 = await bh.get1v1Rankings(2).catch((err) => console.log("Error occurred!", err))
   * console.log(onevoneLeaderboard2)
   * // [
   * // {rank: 50, ...},
@@ -308,7 +308,7 @@ var BrawlhallaApi = /** @class */ (function () {
   * @example
   * ```js
   * // Get page 1 of the leaderboard, if no page was provided it would automatically fetch page 1
-  * let kungfootLeaderboard = await BrawlhallaApi.getRankings("kungfoot").catch((err) => console.log("Error occurred!", err))
+  * let kungfootLeaderboard = await bh.getRankings("kungfoot").catch((err) => console.log("Error occurred!", err))
   * console.log(kungfootLeaderboard)
   * // [
   * // {rank: 1, ...},
@@ -318,7 +318,7 @@ var BrawlhallaApi = /** @class */ (function () {
   * @example
   * ```js
   * // get page 2
-  * let kungfootLeaderboard2 = await BrawlhallaApi.getRankings("kungfoot").catch((err) => console.log("Error occurred!", err))
+  * let kungfootLeaderboard2 = await bh.getRankings("kungfoot").catch((err) => console.log("Error occurred!", err))
   * console.log(kungfootLeaderboard2)
   * // [
   * // {rank: 50, ...},
@@ -361,7 +361,7 @@ var BrawlhallaApi = /** @class */ (function () {
   * @example
   * ```js
   * // Get page 1 of the leaderboard, if no page was provided it would automatically fetch page 1
-  * let onevoneLeaderboard = await BrawlhallaApi.get2v2Rankings().catch((err) => console.log("Error occurred!", err))
+  * let onevoneLeaderboard = await bh.get2v2Rankings().catch((err) => console.log("Error occurred!", err))
   * console.log(onevoneLeaderboard)
   * // [
   * // {rank: 1, ...},
@@ -371,7 +371,7 @@ var BrawlhallaApi = /** @class */ (function () {
   * @example
   * ```js
   * // get page 2
-  * let onevoneLeaderboard2 = await BrawlhallaApi.get2v2Rankings(2).catch((err) => console.log("Error occurred!", err))
+  * let onevoneLeaderboard2 = await bh.get2v2Rankings(2).catch((err) => console.log("Error occurred!", err))
   * console.log(onevoneLeaderboard2)
   * // [
   * // {rank: 50, ...},
@@ -412,7 +412,7 @@ var BrawlhallaApi = /** @class */ (function () {
     * @param id
     * @example
     * ```js
-    * let player = await BrawlhallaApi.getPlayerBySteam64ID(76561197996943884)
+    * let player = await bh.getPlayerBySteam64ID(76561197996943884)
     * console.log(player)
     * // {
     * // "brawlhalla_id": ...,
@@ -450,7 +450,7 @@ var BrawlhallaApi = /** @class */ (function () {
   * @param id
   * @example
   * ```js
-  * let clan = await BrawlhallaApi.getClan(1)
+  * let clan = await bh.getClan(1)
   * console.log(clan)
   * // {
   * // "clan_id": 1,
@@ -466,7 +466,7 @@ var BrawlhallaApi = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        result = [];
+                        result = {};
                         url = "https://api.brawlhalla.com/clan/" + id + "?api_key=" + this.API_KEY;
                         return [4 /*yield*/, axios_1["default"].get(url).then(function (res) { return __awaiter(_this, void 0, void 0, function () {
                                 return __generator(this, function (_a) {
@@ -490,7 +490,7 @@ var BrawlhallaApi = /** @class */ (function () {
    * @example
    * ```js
    * // Get all legends
-   * let legends = await BrawlhallaApi.getLegends()
+   * let legends = await bh.getLegends()
    * console.log(legends)
    * // [{...}, {...}, ...]
    * ```
@@ -526,13 +526,12 @@ var BrawlhallaApi = /** @class */ (function () {
   * @param id
   * @example
   * ```js
-  * let cassidy = await BrawlhallaApi.getLegendById(4)
+  * let cassidy = await bh.getLegendById(4)
   * console.log(cassidy)
   * // {
   * // "legend_id": 4,
   * // ...
   * // }
-  *
   * ```
   */
     BrawlhallaApi.prototype.getLegendById = function (id) {
@@ -567,13 +566,12 @@ var BrawlhallaApi = /** @class */ (function () {
    * @param name
    * @example
    * ```js
-   * let cassidy = await BrawlhallaApi.getLegendByName("cassidy")
+   * let cassidy = await bh.getLegendByName("cassidy")
    * console.log(cassidy)
    * // {
    * // "legend_name_key": "cassidy",
    * // ...
    * // }
-   *
    * ```
    */
     BrawlhallaApi.prototype.getLegendByName = function (name) {
@@ -610,12 +608,121 @@ var BrawlhallaApi = /** @class */ (function () {
         });
     };
     /**
+     Get the elo reset value
+   * @returns Estimate value of elo on season reset
+   * @param elo
+   * @example
+   * ```js
+   * let newElo = bh.getEloResetValue(2000)
+   * console.log(newElo)
+   * // 1742
+   * ```
+   */
+    BrawlhallaApi.prototype.getEloReset = function (elo) {
+        var new_elo = elo;
+        if (elo >= 1400)
+            new_elo = Math.floor(1400 + (elo - 1400.0) / (3.0 - (3000 - elo) / 800.0));
+        return new_elo;
+    };
+    /**
+   Get the team/legend elo reset value
+ * @returns Estimate value of elo on season reset
+ * @param elo
+ * @example
+ * ```js
+ * let newTeamElo = bh.getTeamEloReset(2000)
+ * console.log(newTeamElo)
+ * // 1583
+ * @example
+ * ```js
+ * let newLegendElo = bh.getTeamEloReset(2000)
+ * console.log(newLegendElo)
+ * // 1583
+ * ```
+ */
+    BrawlhallaApi.prototype.getTeamEloReset = function (elo) {
+        if (elo < 2000)
+            return Math.floor((elo + 375) / 1.5);
+        return Math.floor(1583 + (elo - 2000) / 10);
+    };
+    /**
+   Get the glory from wins
+ * @returns Estimate value of glory from wins on season reset
+ * @param wins
+ * @example
+ * ```js
+ * let gloryFromWins = bh.getGloryFromWins(67)
+ * console.log(gloryFromWins)
+ * // 1340
+ * ```
+ */
+    BrawlhallaApi.prototype.getGloryFromWins = function (wins) {
+        if (wins <= 150)
+            return 20 * wins;
+        return Math.floor((10 * (45 * Math.pow(Math.log10(wins * 2), 2))) + 245);
+    };
+    /**
+ Get the glory from wins
+* @returns Estimate value of glory from wins on season reset
+* @param wins
+* @example
+* ```js
+* let gloryFromRating = bh.getGloryFromBestRating(1900)
+* console.log(gloryFromRating)
+* // 3941
+* ```
+*/
+    BrawlhallaApi.prototype.getGloryFromBestRating = function (best_rating) {
+        var val = 0;
+        if (best_rating < 1200)
+            val = 250;
+        if (best_rating >= 1200 && best_rating < 1286)
+            val = 10 * (25 + ((0.872093023) * (86 - (1286 - best_rating))));
+        if (best_rating >= 1286 && best_rating < 1390)
+            val = 10 * (100 + ((0.721153846) * (104 - (1390 - best_rating))));
+        if (best_rating >= 1390 && best_rating < 1680)
+            val = 10 * (187 + ((0.389655172) * (290 - (1680 - best_rating))));
+        if (best_rating >= 1680 && best_rating < 2000)
+            val = 10 * (300 + ((0.428125) * (320 - (2000 - best_rating))));
+        if (best_rating >= 2000 && best_rating < 2300)
+            val = 10 * (437 + ((0.143333333) * (300 - (2300 - best_rating))));
+        if (best_rating >= 2300)
+            val = 10 * (480 + ((0.05) * (400 - (2700 - best_rating))));
+        return Math.floor(val);
+    };
+    /**
+Get the glory from wins
+* @returns Estimate value of glory from wins on season reset
+* @param wins
+* @example
+* ```js
+* let gloryFromRating = bh.getGlory(1900, 100)
+* console.log(gloryFromRating)
+* // {
+* // wins: 2000,
+* // rating: 3941,
+* // total: 5941,
+* // }
+* ```
+*/
+    BrawlhallaApi.prototype.getGlory = function (best_rating, wins) {
+        var wins_glory = this.getGloryFromWins(wins);
+        var rating_glory = this.getGloryFromBestRating(best_rating);
+        var total_glory = wins_glory + rating_glory;
+        var glory = {
+            wins: wins_glory,
+            rating: rating_glory,
+            total: total_glory
+        };
+        return glory;
+    };
+    /**
      Fetch a path using the `https://api.brawlhalla.com` url
    * @returns The result of the fetch request
    * @param path the path to fetch, example: `/legend/all`
    * @example
    * ```js
-   * let legends = await BrawlhallaApi.get("/legend/all")
+   * let legends = await bh.get("/legend/all")
    * console.log(legends)
    * // {
    * // ...
