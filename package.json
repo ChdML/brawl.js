@@ -1,13 +1,12 @@
 {
-    "version": "0.2.1",
+    "version": "0.2.2",
     "license": "MIT",
     "main": "dist/index.js",
     "typings": "dist/index.d.ts",
     "type": "commonjs",
     "keywords": ["brawlhalla", "api", "brawlhalla-api", "brawlhalla-api-client", "bh", "brawlhallaapi"],
     "files": [
-        "dist",
-        "src"
+        "dist"
     ],
     "engines": {
         "node": ">=10"

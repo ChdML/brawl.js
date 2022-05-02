@@ -191,7 +191,7 @@ Returns: the fetched result.
 I made this so I could learn how to use the Brawlhalla API and I hope it can be useful for other people. If you have any questions, feel free to ask on the issues page.
 
 # Changelog:
-# V0.2.1:
+# V0.2.1-0.2.2:
 - Removed `src` folder since there's no need to add it, plus it saves 50KB
 # V0.2.0:
 - Added the `has_played_10_games` parameter for `getGloryFromWins` and `getGlory`
