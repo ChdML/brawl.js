@@ -123,7 +123,52 @@ console.log(cassidy)
 ```
 
 Returns: an object containing the legend info.
+## .getEloReset(elo)
+`elo`: Player's elo
+```js
+const new_elo = await bh.getEloReset(1900)
+console.log(new_elo)
+```
 
+Returns: a number of the estimated elo reset value.
+## .getTeamEloReset(elo)
+`elo`: Team/Legend elo
+```js
+const new_team_elo = await bh.getTeamEloReset(1900)
+console.log(new_team_elo)
+```
+
+Returns: a number of the estimated elo reset value.
+## .getGlory(best_rating, wins, has_played_10_games)
+`best_rating`: Peak elo rating of the player\
+`wins`: Number of wins the player has\
+`has_played_10_games`: If the player has played 10 games or more, this value should be `true`, otherwise it should be `false`
+`has`
+```js
+const glory = await bh.getGlory(1900, 100, true)
+console.log(glory)
+```
+
+Returns: an object of the wins, best rating, and total glory.
+
+## .getGloryFromBestRating(best_rating)
+`best_rating`: Peak elo rating of the player
+`has`
+```js
+const best_rating_glory = await bh.getGloryFromBestRating(1900)
+console.log(best_rating_glory)
+```
+
+Returns: a number of the best rating glory.
+## .getGloryFromWins(wins, has_played_10_games)
+`best_rating`: Peak elo rating of the player\
+`has_played_10_games`: If the player has played 10 games or more, this value should be `true`, otherwise it should be `false`
+```js
+const wins_glory = await bh.getGloryFromWins(100, true)
+console.log(wins_glory)
+```
+
+Returns: a number of the wins glory.
 ## .get(path)
 `path`: the path to the api endpoint, example: `/rankings/1v1/all/1` would result in the url to be `https://api.brawlhalla.com/rankings/1v1/all/1`
 ```js
@@ -146,13 +191,15 @@ Returns: the fetched result.
 I made this so I could learn how to use the Brawlhalla API and I hope it can be useful for other people. If you have any questions, feel free to ask on the issues page.
 
 # Changelog:
-
-# 0.1.9:
+# V0.2.0:
+- Added the `has_played_10_games` parameter for `getGloryFromWins` and `getGlory`
+- Added Documentation for new methods listed below
+# V0.1.9:
 Added the following methods:
 | Method | Parameters | Description |
 | ----------- | ----------- | ----------- |
-| `getGlory`  | `best_rating`, `wins`     | Returns an object of the wins, best rating, and total glory |
+| `getGlory`  | `best_rating`, `wins`, `has_played_10_games`     | Returns an object of the wins, best rating, and total glory |
 | `getGloryFromBestRating`  | `best_rating`     | Returns a number of the glory from best rating |
-| `getGloryFromWins`  | `wins`     | Returns a number of the glory from wins |
+| `getGloryFromWins`  | `wins`,  `has_played_10_games`    | Returns a number of the glory from wins |
 | `getEloReset`  | `elo`     | Returns a number of the rank elo reset |
 | `getTeamEloReset`  | `elo`     | Returns a number of the team/legend elo reset |

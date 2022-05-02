@@ -402,7 +402,8 @@ async getPlayerRankedStats(id: number|string): Promise<Object> {
  * // 1340
  * ```
  */
-   getGloryFromWins(wins: number): number {
+   getGloryFromWins(wins: number, has_played_10_games: Boolean): number {
+    if(!has_played_10_games) return 0;
     if (wins <= 150) return 20 * wins;
     return Math.floor((10*(45*Math.pow(Math.log10(wins*2),2))) + 245);
   }
@@ -450,8 +451,8 @@ async getPlayerRankedStats(id: number|string): Promise<Object> {
  * // }
  * ```
  */
-   getGlory(best_rating: number, wins: number): Object {
-    let wins_glory: number = this.getGloryFromWins(wins)
+   getGlory(best_rating: number, wins: number, has_played_10_games: Boolean): Object {
+    let wins_glory: number = this.getGloryFromWins(wins, has_played_10_games)
     let rating_glory: number = this.getGloryFromBestRating(best_rating)
     let total_glory: number = wins_glory + rating_glory
     let glory: Object = {

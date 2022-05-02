@@ -656,13 +656,15 @@ var BrawlhallaApi = /** @class */ (function () {
  * // 1340
  * ```
  */
-    BrawlhallaApi.prototype.getGloryFromWins = function (wins) {
+    BrawlhallaApi.prototype.getGloryFromWins = function (wins, has_played_10_games) {
+        if (!has_played_10_games)
+            return 0;
         if (wins <= 150)
             return 20 * wins;
         return Math.floor((10 * (45 * Math.pow(Math.log10(wins * 2), 2))) + 245);
     };
     /**
- Get the glory from wins
+ Get the glory from best rating
 * @returns Estimate value of glory from wins on season reset
 * @param wins
 * @example
@@ -691,7 +693,7 @@ var BrawlhallaApi = /** @class */ (function () {
         return Math.floor(val);
     };
     /**
-Get the glory from wins
+Get the wins, best rating, and total glory
 * @returns Estimate value of glory from wins on season reset
 * @param wins
 * @example
@@ -705,8 +707,8 @@ Get the glory from wins
 * // }
 * ```
 */
-    BrawlhallaApi.prototype.getGlory = function (best_rating, wins) {
-        var wins_glory = this.getGloryFromWins(wins);
+    BrawlhallaApi.prototype.getGlory = function (best_rating, wins, has_played_10_games) {
+        var wins_glory = this.getGloryFromWins(wins, has_played_10_games);
         var rating_glory = this.getGloryFromBestRating(best_rating);
         var total_glory = wins_glory + rating_glory;
         var glory = {
