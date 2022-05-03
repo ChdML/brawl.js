@@ -1,5 +1,5 @@
 {
-    "version": "0.2.3",
+    "version": "0.2.4",
     "license": "MIT",
     "main": "dist/index.js",
     "typings": "dist/index.d.ts",
@@ -13,7 +13,9 @@
         "brawlhallaapi"
     ],
     "files": [
-        "dist"
+        "dist",
+        "!dist/*.map",
+        "!dist/*.development*"
     ],
     "engines": {
         "node": ">=10"
@@ -23,7 +25,7 @@
     },
     "scripts": {
         "start": "tsdx watch",
-        "build": "tsdx build",
+        "build": "tsdx build --disable-source-maps",
         "test": "npx tsc ./src/index.ts && node ./test/index",
         "lint": "tsdx lint",
         "prepare": "tsdx build",
