@@ -36,11 +36,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-// I hate typescript so much why did i think of this?
-// I'm not sure if this is the best way to do this but it works
-// Goofy types are not my thing
-// I miss javascript
-var axios_1 = require("axios");
+var p = require("phin");
+var version = require("../package.json").version;
 /**
 * @param API_KEY
 * @param region Optional, defaults to `all`, change the region if you wanna get the leaderboard from a different region
@@ -71,8 +68,7 @@ var BrawlhallaApi = /** @class */ (function () {
         this.API_KEY = API_KEY;
         this.region = region;
     }
-    BrawlhallaApi.prototype.handleError = function (err) {
-        var result;
+    BrawlhallaApi.prototype.handleError = function (status) {
         var errors = {
             401: {
                 status: 401,
@@ -95,17 +91,7 @@ var BrawlhallaApi = /** @class */ (function () {
                 message: "Service Unavailable - We're temporarily offline for maintenance. Please try again later."
             }
         };
-        if (err.response) {
-            var status_1 = err.response.status;
-            result = errors[status_1];
-        }
-        else if (err.request) {
-            result = err.request;
-        }
-        else {
-            result = err.message;
-        }
-        throw result;
+        throw errors[status];
     };
     /**
   * @returns An object of the player's stats
@@ -122,25 +108,14 @@ var BrawlhallaApi = /** @class */ (function () {
   */
     BrawlhallaApi.prototype.getPlayerStats = function (id) {
         return __awaiter(this, void 0, void 0, function () {
-            var result, url;
-            var _this = this;
+            var result;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         result = {};
-                        url = "https://api.brawlhalla.com/player/" + id + "/stats?api_key=" + this.API_KEY;
-                        return [4 /*yield*/, axios_1["default"].get(url).then(function (res) { return __awaiter(_this, void 0, void 0, function () {
-                                return __generator(this, function (_a) {
-                                    switch (_a.label) {
-                                        case 0: return [4 /*yield*/, res.data];
-                                        case 1:
-                                            result = _a.sent();
-                                            return [2 /*return*/];
-                                    }
-                                });
-                            }); })["catch"](this.handleError)];
+                        return [4 /*yield*/, this.get("player/" + id + "/stats")];
                     case 1:
-                        _a.sent();
+                        result = _a.sent();
                         return [2 /*return*/, result];
                 }
             });
@@ -161,25 +136,14 @@ var BrawlhallaApi = /** @class */ (function () {
   */
     BrawlhallaApi.prototype.getPlayerRankedStats = function (id) {
         return __awaiter(this, void 0, void 0, function () {
-            var result, url;
-            var _this = this;
+            var result;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         result = {};
-                        url = "https://api.brawlhalla.com/player/" + id + "/ranked?api_key=" + this.API_KEY;
-                        return [4 /*yield*/, axios_1["default"].get(url).then(function (res) { return __awaiter(_this, void 0, void 0, function () {
-                                return __generator(this, function (_a) {
-                                    switch (_a.label) {
-                                        case 0: return [4 /*yield*/, res.data];
-                                        case 1:
-                                            result = _a.sent();
-                                            return [2 /*return*/];
-                                    }
-                                });
-                            }); })["catch"](this.handleError)];
+                        return [4 /*yield*/, this.get("player/" + id + "/ranked")];
                     case 1:
-                        _a.sent();
+                        result = _a.sent();
                         return [2 /*return*/, result];
                 }
             });
@@ -203,45 +167,29 @@ var BrawlhallaApi = /** @class */ (function () {
   * // ...]
   * ```
   */
-    BrawlhallaApi.prototype.getRankedByName = function (name, region, page, exact, exactCharCase) {
-        if (region === void 0) { region = this.region || "all"; }
-        if (page === void 0) { page = 1; }
+    BrawlhallaApi.prototype.getRankedByName = function (name, exact, exactCharCase, page, region) {
         if (exact === void 0) { exact = false; }
         if (exactCharCase === void 0) { exactCharCase = false; }
+        if (page === void 0) { page = 1; }
+        if (region === void 0) { region = this.region || "all"; }
         return __awaiter(this, void 0, void 0, function () {
-            var result, url;
-            var _this = this;
+            var result, arr, i;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         result = [];
-                        url = "https://api.brawlhalla.com/rankings/1v1/" + region + "/" + page + "?name=" + name + "&api_key=" + this.API_KEY;
-                        // No support for 2v2 name searching yet.
-                        // let url2v2 = `https://api.brawlhalla.com/rankings/2v2/${this.region}/${page}?name=${name}&api_key=${this.API_KEY}`
-                        return [4 /*yield*/, axios_1["default"].get(url).then(function (res) { return __awaiter(_this, void 0, void 0, function () {
-                                var arr, i;
-                                return __generator(this, function (_a) {
-                                    switch (_a.label) {
-                                        case 0: return [4 /*yield*/, res.data];
-                                        case 1:
-                                            result = _a.sent();
-                                            arr = [];
-                                            if (exact) {
-                                                for (i = 0; i < result.length; i++) {
-                                                    if (exactCharCase ? result[i].name === name : result[i].name.toLowerCase() === name.toLowerCase()) {
-                                                        arr.push(result[i]);
-                                                    }
-                                                }
-                                                result = arr;
-                                            }
-                                            return [2 /*return*/];
-                                    }
-                                });
-                            }); })["catch"](this.handleError)];
+                        return [4 /*yield*/, this.get("rankings/1v1/" + region + "/" + page + "?name=" + name)];
                     case 1:
-                        // No support for 2v2 name searching yet.
-                        // let url2v2 = `https://api.brawlhalla.com/rankings/2v2/${this.region}/${page}?name=${name}&api_key=${this.API_KEY}`
-                        _a.sent();
+                        result = _a.sent();
+                        if (exact) {
+                            arr = [];
+                            for (i = 0; i < result.length; i++) {
+                                if (exactCharCase ? result[i].name === name : result[i].name.toLowerCase() === name.toLowerCase()) {
+                                    arr.push(result[i]);
+                                }
+                            }
+                            result = arr;
+                        }
                         return [2 /*return*/, result];
                 }
             });
@@ -276,25 +224,14 @@ var BrawlhallaApi = /** @class */ (function () {
         if (page === void 0) { page = 1; }
         if (region === void 0) { region = this.region || "all"; }
         return __awaiter(this, void 0, void 0, function () {
-            var result, url;
-            var _this = this;
+            var result;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         result = [];
-                        url = "https://api.brawlhalla.com/rankings/1v1/" + region + "/" + page + "?api_key=" + this.API_KEY;
-                        return [4 /*yield*/, axios_1["default"].get(url).then(function (res) { return __awaiter(_this, void 0, void 0, function () {
-                                return __generator(this, function (_a) {
-                                    switch (_a.label) {
-                                        case 0: return [4 /*yield*/, res.data];
-                                        case 1:
-                                            result = _a.sent();
-                                            return [2 /*return*/];
-                                    }
-                                });
-                            }); })["catch"](this.handleError)];
+                        return [4 /*yield*/, this.get("rankings/1v1/" + region + "/" + page)];
                     case 1:
-                        _a.sent();
+                        result = _a.sent();
                         return [2 /*return*/, result];
                 }
             });
@@ -330,25 +267,14 @@ var BrawlhallaApi = /** @class */ (function () {
         if (page === void 0) { page = 1; }
         if (region === void 0) { region = this.region || "all"; }
         return __awaiter(this, void 0, void 0, function () {
-            var result, url;
-            var _this = this;
+            var result;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         result = [];
-                        url = "https://api.brawlhalla.com/rankings/" + mode + "/" + region + "/" + page + "?api_key=" + this.API_KEY;
-                        return [4 /*yield*/, axios_1["default"].get(url).then(function (res) { return __awaiter(_this, void 0, void 0, function () {
-                                return __generator(this, function (_a) {
-                                    switch (_a.label) {
-                                        case 0: return [4 /*yield*/, res.data];
-                                        case 1:
-                                            result = _a.sent();
-                                            return [2 /*return*/];
-                                    }
-                                });
-                            }); })["catch"](this.handleError)];
+                        return [4 /*yield*/, this.get("rankings/" + mode + "/" + region + "/" + page)];
                     case 1:
-                        _a.sent();
+                        result = _a.sent();
                         return [2 /*return*/, result];
                 }
             });
@@ -383,25 +309,14 @@ var BrawlhallaApi = /** @class */ (function () {
         if (page === void 0) { page = 1; }
         if (region === void 0) { region = this.region || "all"; }
         return __awaiter(this, void 0, void 0, function () {
-            var result, url;
-            var _this = this;
+            var result;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         result = [];
-                        url = "https://api.brawlhalla.com/rankings/2v2/" + region + "/" + page + "?api_key=" + this.API_KEY;
-                        return [4 /*yield*/, axios_1["default"].get(url).then(function (res) { return __awaiter(_this, void 0, void 0, function () {
-                                return __generator(this, function (_a) {
-                                    switch (_a.label) {
-                                        case 0: return [4 /*yield*/, res.data];
-                                        case 1:
-                                            result = _a.sent();
-                                            return [2 /*return*/];
-                                    }
-                                });
-                            }); })["catch"](this.handleError)];
+                        return [4 /*yield*/, this.get("rankings/2v2/" + region + "/" + page)];
                     case 1:
-                        _a.sent();
+                        result = _a.sent();
                         return [2 /*return*/, result];
                 }
             });
@@ -422,25 +337,14 @@ var BrawlhallaApi = /** @class */ (function () {
     */
     BrawlhallaApi.prototype.getPlayerBySteam64ID = function (id) {
         return __awaiter(this, void 0, void 0, function () {
-            var result, url;
-            var _this = this;
+            var result;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         result = {};
-                        url = "https://api.brawlhalla.com/search?steamid=" + id + "&api_key=" + this.API_KEY;
-                        return [4 /*yield*/, axios_1["default"].get(url).then(function (res) { return __awaiter(_this, void 0, void 0, function () {
-                                return __generator(this, function (_a) {
-                                    switch (_a.label) {
-                                        case 0: return [4 /*yield*/, res.data];
-                                        case 1:
-                                            result = _a.sent();
-                                            return [2 /*return*/];
-                                    }
-                                });
-                            }); })["catch"](this.handleError)];
+                        return [4 /*yield*/, this.get("search?steamid=" + id)];
                     case 1:
-                        _a.sent();
+                        result = _a.sent();
                         return [2 /*return*/, result];
                 }
             });
@@ -461,25 +365,14 @@ var BrawlhallaApi = /** @class */ (function () {
   */
     BrawlhallaApi.prototype.getClan = function (id) {
         return __awaiter(this, void 0, void 0, function () {
-            var result, url;
-            var _this = this;
+            var result;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         result = {};
-                        url = "https://api.brawlhalla.com/clan/" + id + "?api_key=" + this.API_KEY;
-                        return [4 /*yield*/, axios_1["default"].get(url).then(function (res) { return __awaiter(_this, void 0, void 0, function () {
-                                return __generator(this, function (_a) {
-                                    switch (_a.label) {
-                                        case 0: return [4 /*yield*/, res.data];
-                                        case 1:
-                                            result = _a.sent();
-                                            return [2 /*return*/];
-                                    }
-                                });
-                            }); })["catch"](this.handleError)];
+                        return [4 /*yield*/, this.get("clan/" + id)];
                     case 1:
-                        _a.sent();
+                        result = _a.sent();
                         return [2 /*return*/, result];
                 }
             });
@@ -497,25 +390,14 @@ var BrawlhallaApi = /** @class */ (function () {
    */
     BrawlhallaApi.prototype.getLegends = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var result, url;
-            var _this = this;
+            var result;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         result = [];
-                        url = "https://api.brawlhalla.com/legend/all?api_key=" + this.API_KEY;
-                        return [4 /*yield*/, axios_1["default"].get(url).then(function (res) { return __awaiter(_this, void 0, void 0, function () {
-                                return __generator(this, function (_a) {
-                                    switch (_a.label) {
-                                        case 0: return [4 /*yield*/, res.data];
-                                        case 1:
-                                            result = _a.sent();
-                                            return [2 /*return*/];
-                                    }
-                                });
-                            }); })["catch"](this.handleError)];
+                        return [4 /*yield*/, this.get("legend/all")];
                     case 1:
-                        _a.sent();
+                        result = _a.sent();
                         return [2 /*return*/, result];
                 }
             });
@@ -536,25 +418,14 @@ var BrawlhallaApi = /** @class */ (function () {
   */
     BrawlhallaApi.prototype.getLegendById = function (id) {
         return __awaiter(this, void 0, void 0, function () {
-            var result, url;
-            var _this = this;
+            var result;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         result = {};
-                        url = "https://api.brawlhalla.com/legend/" + id + "?api_key=" + this.API_KEY;
-                        return [4 /*yield*/, axios_1["default"].get(url).then(function (res) { return __awaiter(_this, void 0, void 0, function () {
-                                return __generator(this, function (_a) {
-                                    switch (_a.label) {
-                                        case 0: return [4 /*yield*/, res.data];
-                                        case 1:
-                                            result = _a.sent();
-                                            return [2 /*return*/];
-                                    }
-                                });
-                            }); })["catch"](this.handleError)];
+                        return [4 /*yield*/, this.get("legend/" + id)];
                     case 1:
-                        _a.sent();
+                        result = _a.sent();
                         return [2 /*return*/, result];
                 }
             });
@@ -577,8 +448,7 @@ var BrawlhallaApi = /** @class */ (function () {
     BrawlhallaApi.prototype.getLegendByName = function (name) {
         var _a;
         return __awaiter(this, void 0, void 0, function () {
-            var result, legends, id, url;
-            var _this = this;
+            var result, legends, id;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
@@ -588,19 +458,9 @@ var BrawlhallaApi = /** @class */ (function () {
                         legends = _b.sent();
                         id = (_a = legends.find(function (legend) { return legend.legend_name_key.toLowerCase() === name.toLowerCase() || legend.bio_name.toLowerCase() === name.toLowerCase(); })) === null || _a === void 0 ? void 0 : _a.legend_id;
                         if (!id) return [3 /*break*/, 3];
-                        url = "https://api.brawlhalla.com/legend/" + id + "?api_key=" + this.API_KEY;
-                        return [4 /*yield*/, axios_1["default"].get(url).then(function (res) { return __awaiter(_this, void 0, void 0, function () {
-                                return __generator(this, function (_a) {
-                                    switch (_a.label) {
-                                        case 0: return [4 /*yield*/, res.data];
-                                        case 1:
-                                            result = _a.sent();
-                                            return [2 /*return*/];
-                                    }
-                                });
-                            }); })["catch"](this.handleError)];
+                        return [4 /*yield*/, this.get("legend/" + id)];
                     case 2:
-                        _b.sent();
+                        result = _b.sent();
                         _b.label = 3;
                     case 3: return [2 /*return*/, result];
                 }
@@ -666,7 +526,7 @@ var BrawlhallaApi = /** @class */ (function () {
     /**
  Get the glory from best rating
 * @returns Estimate value of glory from wins on season reset
-* @param wins
+* @param best_rating
 * @example
 * ```js
 * let gloryFromRating = bh.getGloryFromBestRating(1900)
@@ -695,7 +555,9 @@ var BrawlhallaApi = /** @class */ (function () {
     /**
 Get the wins, best rating, and total glory
 * @returns Estimate value of glory from wins on season reset
+* @param best_rating
 * @param wins
+* @param has_played_10_games
 * @example
 * ```js
 * let gloryFromRating = bh.getGlory(1900, 100)
@@ -734,24 +596,24 @@ Get the wins, best rating, and total glory
    */
     BrawlhallaApi.prototype.get = function (path) {
         return __awaiter(this, void 0, void 0, function () {
-            var result, url;
-            var _this = this;
+            var result, url, res;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         url = "https://api.brawlhalla.com/" + path + "&api_key=" + this.API_KEY;
-                        return [4 /*yield*/, axios_1["default"].get(url).then(function (res) { return __awaiter(_this, void 0, void 0, function () {
-                                return __generator(this, function (_a) {
-                                    switch (_a.label) {
-                                        case 0: return [4 /*yield*/, res.data];
-                                        case 1:
-                                            result = _a.sent();
-                                            return [2 /*return*/];
-                                    }
-                                });
-                            }); })["catch"](this.handleError)];
+                        return [4 /*yield*/, p({
+                                'url': url,
+                                'parse': 'json',
+                                'headers': {
+                                    'user-agent': "brawl.js/" + version + " (https://github.com/chdml/brawl.js)"
+                                }
+                            })];
                     case 1:
-                        _a.sent();
+                        res = _a.sent();
+                        if (res.body.error)
+                            this.handleError(res.body.error.code);
+                        else
+                            result = res.body;
                         return [2 /*return*/, result];
                 }
             });

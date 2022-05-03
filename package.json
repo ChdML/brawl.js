@@ -1,21 +1,30 @@
 {
-    "version": "0.2.2",
+    "version": "0.2.3",
     "license": "MIT",
     "main": "dist/index.js",
     "typings": "dist/index.d.ts",
     "type": "commonjs",
-    "keywords": ["brawlhalla", "api", "brawlhalla-api", "brawlhalla-api-client", "bh", "brawlhallaapi"],
+    "keywords": [
+        "brawlhalla",
+        "api",
+        "brawlhalla-api",
+        "brawlhalla-api-client",
+        "bh",
+        "brawlhallaapi"
+    ],
     "files": [
         "dist"
     ],
     "engines": {
         "node": ">=10"
     },
-    "repository": {"url": "https://github.com/ChdML/brawl.js/"},
+    "repository": {
+        "url": "https://github.com/ChdML/brawl.js/"
+    },
     "scripts": {
         "start": "tsdx watch",
         "build": "tsdx build",
-        "test": "tsdx test",
+        "test": "npx tsc ./src/index.ts && node ./test/index",
         "lint": "tsdx lint",
         "prepare": "tsdx build",
         "size": "size-limit",
@@ -34,14 +43,14 @@
     },
     "name": "brawl.js",
     "author": "ChdML",
-    "module": "dist/brawlhallaapi.esm.js",
+    "module": "dist/brawl.js.esm.js",
     "size-limit": [
         {
-            "path": "dist/brawlhallaapi.cjs.production.min.js",
+            "path": "dist/brawl.js.cjs.production.min.js",
             "limit": "10 KB"
         },
         {
-            "path": "dist/brawlhallaapi.esm.js",
+            "path": "dist/brawl.js.esm.js",
             "limit": "10 KB"
         }
     ],
@@ -54,6 +63,6 @@
         "typescript": "^3.9.10"
     },
     "dependencies": {
-        "axios": "^0.27.2"
+        "phin": "^3.6.1"
     }
 }

@@ -2,7 +2,8 @@
 // I'm not sure if this is the best way to do this but it works
 // Goofy types are not my thing
 // I miss javascript
-import axios from 'axios';
+const p = require("phin")
+const {version} = require("../package.json")
 /**
 * @param API_KEY
 * @param region Optional, defaults to `all`, change the region if you wanna get the leaderboard from a different region
@@ -19,8 +20,8 @@ export default class BrawlhallaApi {
 
   API_KEY: string;
   region?: string = "all";
-  private handleError(err: any) {
-    let result: any
+  user_agent: string = `Brawl.js/${version} (https://npmjs.com/package/brawl.js)`
+  private handleError(status: number|string) {
     let errors: any = {
       401: {
         status: 401,
@@ -43,15 +44,7 @@ export default class BrawlhallaApi {
         message:`Service Unavailable - We're temporarily offline for maintenance. Please try again later.`,
       }
     };
-    if (err.response) {
-      let status = err.response.status
-      result = errors[status]
-    } else if (err.request) {
-      result = err.request
-    } else {
-      result = err.message
-    }
-    throw result
+    throw errors[status]
   }
   /**
 * @param API_KEY
@@ -83,10 +76,7 @@ export default class BrawlhallaApi {
 */
 async getPlayerStats(id: number|string): Promise<Object> {
   let result: Object = {};
-  let url = `https://api.brawlhalla.com/player/${id}/stats?api_key=${this.API_KEY}`
-  await axios.get(url).then(async (res) => {
-    result = await res.data
-  }).catch(this.handleError);
+  result = await this.get(`player/${id}/stats`)
   return result
 }
   /**
@@ -104,10 +94,7 @@ async getPlayerStats(id: number|string): Promise<Object> {
 */
 async getPlayerRankedStats(id: number|string): Promise<Object> {
   let result: Object = {};
-  let url = `https://api.brawlhalla.com/player/${id}/ranked?api_key=${this.API_KEY}`
-  await axios.get(url).then(async (res) => {
-    result = await res.data
-  }).catch(this.handleError);
+  result = await this.get(`player/${id}/ranked`)
   return result
 }
   /**
@@ -128,15 +115,11 @@ async getPlayerRankedStats(id: number|string): Promise<Object> {
 * // ...]
 * ```
 */
-  async getRankedByName(name: string, region: string = this.region || "all", page: number = 1, exact: boolean = false, exactCharCase: boolean = false): Promise<Array<any>> {
+  async getRankedByName(name: string, exact: boolean = false, exactCharCase: boolean = false, page: number = 1, region: string = this.region || "all"): Promise<Array<any>> {
     let result: Array<any> = [];
-    let url = `https://api.brawlhalla.com/rankings/1v1/${region}/${page}?name=${name}&api_key=${this.API_KEY}`
-    // No support for 2v2 name searching yet.
-    // let url2v2 = `https://api.brawlhalla.com/rankings/2v2/${this.region}/${page}?name=${name}&api_key=${this.API_KEY}`
-    await axios.get(url).then(async (res) => {
-      result = await res.data
-      let arr: Array<any> = []
+    result = await this.get(`rankings/1v1/${region}/${page}?name=${name}`)
       if (exact) {
+        let arr: Array<any> = []
         for (let i = 0; i < result.length; i++) {
           if (exactCharCase ? result[i].name === name : result[i].name.toLowerCase() === name.toLowerCase()) {
             arr.push(result[i])
@@ -144,7 +127,6 @@ async getPlayerRankedStats(id: number|string): Promise<Object> {
         }
         result = arr
       }
-    }).catch(this.handleError);
     return result
   }
   /**
@@ -174,10 +156,7 @@ async getPlayerRankedStats(id: number|string): Promise<Object> {
 */
   async get1v1Rankings(page: number = 1, region: string = this.region || "all"): Promise<Array<any>> {
     let result: Array<any> = [];
-    let url = `https://api.brawlhalla.com/rankings/1v1/${region}/${page}?api_key=${this.API_KEY}`
-    await axios.get(url).then(async (res) => {
-      result = await res.data
-    }).catch(this.handleError);
+    result = await this.get(`rankings/1v1/${region}/${page}`)
     return result
   }
   /**
@@ -208,10 +187,7 @@ async getPlayerRankedStats(id: number|string): Promise<Object> {
 */
   async getRankings(mode: string, page: number = 1, region: string = this.region || "all"): Promise<Array<any>> {
     let result: Array<any> = [];
-    let url = `https://api.brawlhalla.com/rankings/${mode}/${region}/${page}?api_key=${this.API_KEY}`
-    await axios.get(url).then(async (res) => {
-      result = await res.data
-    }).catch(this.handleError);
+    result = await this.get(`rankings/${mode}/${region}/${page}`)
     return result
   }
   /**
@@ -241,10 +217,7 @@ async getPlayerRankedStats(id: number|string): Promise<Object> {
 */
   async get2v2Rankings(page: number = 1, region: string = this.region || "all"): Promise<Array<any>> {
     let result: Array<any> = [];
-    let url = `https://api.brawlhalla.com/rankings/2v2/${region}/${page}?api_key=${this.API_KEY}`
-    await axios.get(url).then(async (res) => {
-      result = await res.data
-    }).catch(this.handleError);
+    result = await this.get(`rankings/2v2/${region}/${page}`)
     return result
   }
   /**
@@ -262,10 +235,7 @@ async getPlayerRankedStats(id: number|string): Promise<Object> {
   */
   async getPlayerBySteam64ID(id: number|string): Promise<Object> {
     let result: Object = {};
-    let url = `https://api.brawlhalla.com/search?steamid=${id}&api_key=${this.API_KEY}`
-    await axios.get(url).then(async (res) => {
-      result = await res.data
-    }).catch(this.handleError);
+    result = await this.get(`search?steamid=${id}`)
     return result
   }
   /**
@@ -283,10 +253,7 @@ async getPlayerRankedStats(id: number|string): Promise<Object> {
 */
   async getClan(id: number): Promise<Object> {
     let result: Object = {};
-    let url = `https://api.brawlhalla.com/clan/${id}?api_key=${this.API_KEY}`
-    await axios.get(url).then(async (res) => {
-      result = await res.data
-    }).catch(this.handleError);
+    result = await this.get(`clan/${id}`)
     return result
   }
   /**
@@ -301,10 +268,7 @@ async getPlayerRankedStats(id: number|string): Promise<Object> {
  */
   async getLegends(): Promise<Array<any>> {
     let result: Array<any> = [];
-    let url = `https://api.brawlhalla.com/legend/all?api_key=${this.API_KEY}`
-    await axios.get(url).then(async (res) => {
-      result = await res.data
-    }).catch(this.handleError);
+    result = await this.get("legend/all")
     return result
   }
   /**
@@ -320,12 +284,9 @@ async getPlayerRankedStats(id: number|string): Promise<Object> {
 * // }
 * ```
 */
-  async getLegendById(id: any): Promise<Object> {
+  async getLegendById(id: number|string): Promise<Object> {
     let result: Object = {};
-    let url = `https://api.brawlhalla.com/legend/${id}?api_key=${this.API_KEY}`
-    await axios.get(url).then(async (res) => {
-      result = await res.data
-    }).catch(this.handleError);
+    result = await this.get(`legend/${id}`)
     return result
   }
   /**
@@ -346,13 +307,7 @@ async getPlayerRankedStats(id: number|string): Promise<Object> {
     let result: Object = {};
     let legends = await this.getLegends();
     let id = legends.find((legend: any) => legend.legend_name_key.toLowerCase() === name.toLowerCase() || legend.bio_name.toLowerCase() === name.toLowerCase())?.legend_id;
-
-    if (id) {
-      let url = `https://api.brawlhalla.com/legend/${id}?api_key=${this.API_KEY}`
-      await axios.get(url).then(async (res) => {
-        result = await res.data
-      }).catch(this.handleError);
-    }
+    if (id) result = await this.get(`legend/${id}`)
     return result
   }
   /**
@@ -410,7 +365,7 @@ async getPlayerRankedStats(id: number|string): Promise<Object> {
       /**
    Get the glory from best rating
  * @returns Estimate value of glory from wins on season reset
- * @param wins
+ * @param best_rating
  * @example
  * ```js
  * let gloryFromRating = bh.getGloryFromBestRating(1900)
@@ -439,7 +394,9 @@ async getPlayerRankedStats(id: number|string): Promise<Object> {
         /**
    Get the wins, best rating, and total glory
  * @returns Estimate value of glory from wins on season reset
+ * @param best_rating
  * @param wins
+ * @param has_played_10_games
  * @example
  * ```js
  * let gloryFromRating = bh.getGlory(1900, 100)
@@ -479,9 +436,15 @@ async getPlayerRankedStats(id: number|string): Promise<Object> {
   async get(path: string): Promise<any> {
     let result: any;
     let url = `https://api.brawlhalla.com/${path}&api_key=${this.API_KEY}`
-    await axios.get(url).then(async (res) => {
-      result = await res.data
-    }).catch(this.handleError);
+    const res = await p({
+      'url': url,
+      'parse': 'json',
+      'headers': {
+        'user-agent': this.user_agent
+      }
+    })
+    if(res.body.error) this.handleError(res.body.error.code)
+    else result = res.body
     return result
   }
 }
