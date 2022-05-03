@@ -1,5 +1,7 @@
 *.log
 .DS_Store
 node_modules
-dist
+
 .github
+dist/*.map
+dist/.development*

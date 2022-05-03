@@ -25,12 +25,12 @@
     },
     "scripts": {
         "start": "tsdx watch",
-        "build": "tsdx build --disable-source-maps",
+        "build": "tsdx build",
         "test": "npx tsc ./src/index.ts && node ./test/index",
         "lint": "tsdx lint",
         "prepare": "tsdx build",
-        "size": "size-limit",
-        "analyze": "size-limit --why"
+        "push": "git commit -a -m %npm_config_message% && git push",
+        "publish": ""
     },
     "husky": {
         "hooks": {
