@@ -36,6 +36,10 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
+// I hate typescript so much why did i think of this?
+// I'm not sure if this is the best way to do this but it works
+// Goofy types are not my thing
+// I miss javascript
 var p = require("phin");
 var version = require("../package.json").version;
 /**
@@ -65,6 +69,7 @@ var BrawlhallaApi = /** @class */ (function () {
     function BrawlhallaApi(API_KEY, region) {
         if (region === void 0) { region = "all"; }
         this.region = "all";
+        this.user_agent = "Brawl.js/" + version + " (https://npmjs.com/package/brawl.js)";
         this.API_KEY = API_KEY;
         this.region = region;
     }
@@ -605,7 +610,7 @@ Get the wins, best rating, and total glory
                                 'url': url,
                                 'parse': 'json',
                                 'headers': {
-                                    'user-agent': "brawl.js/" + version + " (https://github.com/chdml/brawl.js)"
+                                    'user-agent': this.user_agent
                                 }
                             })];
                     case 1:

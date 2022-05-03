@@ -143,7 +143,6 @@ Returns: a number of the estimated elo reset value.
 `best_rating`: Peak elo rating of the player\
 `wins`: Number of wins the player has\
 `has_played_10_games`: If the player has played 10 games or more, this value should be `true`, otherwise it should be `false`
-`has`
 ```js
 const glory = await bh.getGlory(1900, 100, true)
 console.log(glory)
@@ -191,6 +190,8 @@ Returns: the fetched result.
 I made this so I could learn how to use the Brawlhalla API and I hope it can be useful for other people. If you have any questions, feel free to ask on the issues page.
 
 # Changelog:
+# V0.2.5:
+- Minor adjustments to the documentation
 # V0.2.1-0.2.4:
 - Removed `src` folder since there's no need to add it + it saves 50KB.
 - Stopped using `axios` and started using `phin` since its very lightweight.
