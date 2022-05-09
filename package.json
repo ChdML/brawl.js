@@ -1,5 +1,5 @@
 {
-    "version": "0.2.5",
+    "version": "0.2.6",
     "license": "MIT",
     "main": "dist/index.js",
     "typings": "dist/index.d.ts",
@@ -13,9 +13,7 @@
         "brawlhallaapi"
     ],
     "files": [
-        "dist",
-        "!dist/*.map",
-        "!dist/*.development*"
+        "dist"
     ],
     "engines": {
         "node": ">=10"
@@ -29,8 +27,7 @@
         "test": "npx tsc ./src/index.ts && node ./test/index",
         "lint": "tsdx lint",
         "prepare": "tsdx build",
-        "push": "git commit -a -m %npm_config_message% && git push",
-        "publish": ""
+        "publish": "npm publish"
     },
     "husky": {
         "hooks": {
