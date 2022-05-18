@@ -117,7 +117,7 @@ async getPlayerRankedStats(id: number|string): Promise<Object> {
 */
   async getRankedByName(name: string, exact: boolean = false, exactCharCase: boolean = false, page: number = 1, region: string = this.region || "all"): Promise<Array<any>> {
     let result: Array<any> = [];
-    result = await this.get(`rankings/1v1/${region}/${page}?name=${name}`)
+    result = await this.get(`rankings/1v1/${region || "all"}/${page || 1}?name=${name}`)
       if (exact) {
         let arr: Array<any> = []
         for (let i = 0; i < result.length; i++) {

@@ -53,10 +53,12 @@ const topkungfoot = await bh.getRankings("kungfoot")
 console.log(topkungfoot)
 ```
 Returns: an array of the top `mode` players.
-## .getRankedByName(name, region?, page?, exact?, exactCharCase?)
+## .getRankedByName(name, exact?, exactCharCase?, page?, region?)
 `name`: the player name to search for.\
 `exact`: default: `false`. If this value is `true`, it will return only exact matches, if it is `false`, it will return partial matches\
-`exactCharCase`: default: `false`. If this value is `true`, it will return only exact character case matches, if it is `false`, it will not check for character case, needs exact to be `true`.
+`exactCharCase`: default: `false`. If this value is `true`, it will return only exact character case matches, if it is `false`, it will not check for character case, needs exact to be `true`.\
+`page`: default: `1`. The page to fetch from.\
+`region`: default: `all`. The region to fetch from.\
 ```js
 const player = await bh.getRankedByName("ChdML", undefined, undefined, true)
 console.log(player)
@@ -190,7 +192,9 @@ Returns: the fetched result.
 I made this so I could learn how to use the Brawlhalla API and I hope it can be useful for other people. If you have any questions, feel free to ask on the issues page.
 
 # Changelog:
-# V0.2.6:
+# V0.2.8:
+- Fixed docs for `getRankedByName`
+# V0.2.6-0.2.7:
 - Fixed error `Cannot find module './brawl.js.cjs.development.js'`
 # V0.2.5:
 - Minor adjustments to the documentation
