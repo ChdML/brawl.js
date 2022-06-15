@@ -192,6 +192,8 @@ Returns: the fetched result.
 I made this so I could learn how to use the Brawlhalla API and I hope it can be useful for other people. If you have any questions, feel free to ask on the issues page.
 
 # Changelog:
+# V0.2.9:
+- Decoding responses so names can displayed correctly
 # V0.2.8:
 - Fixed docs for `getRankedByName`
 # V0.2.6-0.2.7:

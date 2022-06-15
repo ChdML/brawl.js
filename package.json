@@ -1,5 +1,5 @@
 {
-    "version": "0.2.7",
+    "version": "0.2.9",
     "license": "MIT",
     "main": "dist/index.js",
     "typings": "dist/index.d.ts",
@@ -24,7 +24,7 @@
     "scripts": {
         "start": "tsdx watch",
         "build": "tsdx build",
-        "test": "npx tsc ./src/index.ts && node ./test/index",
+        "test": "node ./test/index",
         "lint": "tsdx lint",
         "prepare": "tsdx build"
     },
@@ -61,6 +61,7 @@
         "typescript": "^3.9.10"
     },
     "dependencies": {
-        "phin": "^3.6.1"
+        "phin": "^3.6.1",
+        "utf8": "^3.0.0"
     }
 }

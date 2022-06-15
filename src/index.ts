@@ -2,294 +2,348 @@
 // I'm not sure if this is the best way to do this but it works
 // Goofy types are not my thing
 // I miss javascript
-const p = require("phin")
-const {version} = require("../package.json")
+const p = require('phin');
+const { version } = require('../package.json');
+const utf8 = require('utf8');
 /**
-* @param API_KEY
-* @param region Optional, defaults to `all`, change the region if you wanna get the leaderboard from a different region
-* @example
-* ```js
-* // CommonJS:
-* const BrawlhallaApi = require('brawl.js').default
-* // ES:
-* import BrawlhallaApi from 'brawl.js'
-* const bh = new BrawlhallaApi(API_KEY, "eu") // "eu" is the region, default region is "all", no need to add the region parameter
-* ```
-*/
-export default class BrawlhallaApi {
+ * @param API_KEY
+ * @param region Optional, defaults to `all`, change the region if you wanna get results from a different region
+ * @example
+ * ```js
+ * // CommonJS:
+ * const BrawlhallaApi = require('brawl.js').default
+ * // ES:
+ * import BrawlhallaApi from 'brawl.js'
+ * const bh = new BrawlhallaApi(API_KEY, "eu") // "eu" is the region, default region is "all", no need to add the region parameter
+ * ```
+ */
 
-  API_KEY: string;
-  region?: string = "all";
-  user_agent: string = `Brawl.js/${version} (https://npmjs.com/package/brawl.js)`
-  private handleError(status: number|string) {
+export default class BrawlhallaApi {
+  private API_KEY: string;
+  region?: string = 'all';
+  user_agent: string = `Brawl.js/${version} (https://npmjs.com/package/brawl.js)`;
+  private handleError(status: number | string) {
     let errors: any = {
       401: {
         status: 401,
-        message: `Unauthorized - You Must use HTTPS`
+        message: `Unauthorized - You Must use HTTPS`,
       },
       403: {
         status: 403,
-        message: `Forbidden - Bad API key or missing API key`
+        message: `Forbidden - Bad API key or missing API key`,
       },
       404: {
         status: 404,
-        message: `Not Found/Bad Request - The requested resource was not found, or required parameters are missing or possibly invalid`
+        message: `Not Found/Bad Request - The requested resource was not found, or required parameters are missing or possibly invalid`,
       },
       429: {
         status: 429,
-        message: `Too Many Requests - Your API key has hit the rate limit`
+        message: `Too Many Requests - Your API key has hit the rate limit`,
       },
       503: {
         status: 503,
-        message:`Service Unavailable - We're temporarily offline for maintenance. Please try again later.`,
-      }
+        message: `Service Unavailable - We're temporarily offline for maintenance. Please try again later.`,
+      },
     };
-    throw errors[status]
+    throw errors[status];
   }
   /**
-* @param API_KEY
-* @example
-* ```js
-* // CommonJS:
-* const BrawlhallaApi = require('brawl.js').default
-* // ES:
-* import BrawlhallaApi from 'brawl.js'
-* const bh = new BrawlhallaApi(API_KEY, "eu") // "eu" is the region, default region is "all", no need to add the region parameter
-* ```
-*/
-  constructor(API_KEY: string, region: string = "all") {
+   * @param API_KEY The API key you got from Brawlhalla
+   * @param region Optional, defaults to `all`, change the region if you wanna get results form a different region,
+   * @example
+   * ```js
+   * // CommonJS:
+   * const BrawlhallaApi = require('brawl.js').default
+   * // ES:
+   * import BrawlhallaApi from 'brawl.js'
+   * const bh = new BrawlhallaApi(API_KEY, "eu") // "eu" is the region, default region is "all", no need to add the region parameter
+   * ```
+   */
+  constructor(API_KEY: string, region: string = 'all') {
     this.API_KEY = API_KEY;
     this.region = region;
   }
   /**
-* @returns An object of the player's stats
-* @param id the `brawlhalla_id` of the player
-* @example
-* ```js
-* // Get player's stats
-* let player = await bh.getPlayerStats(1).catch((err) => console.log("Player does not exist!"))
-* console.log(player)
-* // {
-* // "brawlhalla_id": 1,
-* // ...}
-* ```
-*/
-async getPlayerStats(id: number|string): Promise<Object> {
-  let result: Object = {};
-  result = await this.get(`player/${id}/stats`)
-  return result
-}
-  /**
-* @returns An object of the player's ranked stats if it exists
-* @param id the `brawlhalla_id` of the player
-* @example
-* ```js
-* // Get player's ranked stats
-* let player = await bh.getPlayerRankedStats(1).catch((err) => console.log("Player does not exist!"))
-* console.log(player)
-* // {
-* // "brawlhalla_id": 1,
-* // ...}
-* ```
-*/
-async getPlayerRankedStats(id: number|string): Promise<Object> {
-  let result: Object = {};
-  result = await this.get(`player/${id}/ranked`)
-  return result
-}
-  /**
-* @returns An Array of all matched usernames
-* @param name
-* @param region Optional, defaults to `all`, change the region if you wanna get the leaderboard from a different region, 
-* @param page Optional, defaults to 1
-* @param exact default: `false`. If this value is true, it will return only exact matches, if it is false, it will return partial matches.
-* @param exactCharCase default: `false`. If this value is true, it will return only exact character case matches, if it is false, it will not check for character case, needs `exact` to be true.
-* @example
-* ```js
-* // Get all players with the name "ChdML"
-* let players = await bh.getByName("ChdML").catch((err) => console.log("Player does not exist!"))
-* console.log(players)
-* // [
-* // {name: "ChdML", ...},
-* // {name: "ChdML2"}, 
-* // ...]
-* ```
-*/
-  async getRankedByName(name: string, exact: boolean = false, exactCharCase: boolean = false, page: number = 1, region: string = this.region || "all"): Promise<Array<any>> {
-    let result: Array<any> = [];
-    result = await this.get(`rankings/1v1/${region || "all"}/${page || 1}?name=${name}`)
-      if (exact) {
-        let arr: Array<any> = []
-        for (let i = 0; i < result.length; i++) {
-          if (exactCharCase ? result[i].name === name : result[i].name.toLowerCase() === name.toLowerCase()) {
-            arr.push(result[i])
-          }
-        }
-        result = arr
-      }
-    return result
-  }
-  /**
-* @returns An Array of all the top 1v1 players
-* @param page default: `1`
-* @param region default: `all`, change the region if you wanna get the leaderboard from a different region
-* @example
-* ```js
-* // Get page 1 of the leaderboard, if no page was provided it would automatically fetch page 1
-* let onevoneLeaderboard = await bh.get1v1Rankings().catch((err) => console.log("Error occurred!", err))
-* console.log(onevoneLeaderboard)
-* // [
-* // {rank: 1, ...},
-* // {rank: 2}, 
-* // ...]
-* ```
-* @example
-* ```js
-* // get page 2
-* let onevoneLeaderboard2 = await bh.get1v1Rankings(2).catch((err) => console.log("Error occurred!", err))
-* console.log(onevoneLeaderboard2)
-* // [
-* // {rank: 50, ...},
-* // {rank: 51}, 
-* // ...]
-* ```
-*/
-  async get1v1Rankings(page: number = 1, region: string = this.region || "all"): Promise<Array<any>> {
-    let result: Array<any> = [];
-    result = await this.get(`rankings/1v1/${region}/${page}`)
-    return result
-  }
-  /**
-* @returns An Array of all the top players
-* @param mode Required, there's `1v1`, `2v2`, and special rank modes, enter the mode you want to get the leaderboard from.
-* @param page default: `1`
-* @param region default: `all`, change the region if you wanna get the leaderboard from a different region
-* @example
-* ```js
-* // Get page 1 of the leaderboard, if no page was provided it would automatically fetch page 1
-* let kungfootLeaderboard = await bh.getRankings("kungfoot").catch((err) => console.log("Error occurred!", err))
-* console.log(kungfootLeaderboard)
-* // [
-* // {rank: 1, ...},
-* // {rank: 2}, 
-* // ...]
-* ```
-* @example
-* ```js
-* // get page 2
-* let kungfootLeaderboard2 = await bh.getRankings("kungfoot").catch((err) => console.log("Error occurred!", err))
-* console.log(kungfootLeaderboard2)
-* // [
-* // {rank: 50, ...},
-* // {rank: 51}, 
-* // ...]
-* ```
-*/
-  async getRankings(mode: string, page: number = 1, region: string = this.region || "all"): Promise<Array<any>> {
-    let result: Array<any> = [];
-    result = await this.get(`rankings/${mode}/${region}/${page}`)
-    return result
-  }
-  /**
-* @returns An Array of all the top 2v2 players
-* @param page default: `1`
-* @param region default: `all`, change the region if you wanna get the leaderboard from a different region
-* @example
-* ```js
-* // Get page 1 of the leaderboard, if no page was provided it would automatically fetch page 1
-* let onevoneLeaderboard = await bh.get2v2Rankings().catch((err) => console.log("Error occurred!", err))
-* console.log(onevoneLeaderboard)
-* // [
-* // {rank: 1, ...},
-* // {rank: 2}, 
-* // ...]
-* ```
-* @example
-* ```js
-* // get page 2
-* let onevoneLeaderboard2 = await bh.get2v2Rankings(2).catch((err) => console.log("Error occurred!", err))
-* console.log(onevoneLeaderboard2)
-* // [
-* // {rank: 50, ...},
-* // {rank: 51}, 
-* // ...]
-* ```
-*/
-  async get2v2Rankings(page: number = 1, region: string = this.region || "all"): Promise<Array<any>> {
-    let result: Array<any> = [];
-    result = await this.get(`rankings/2v2/${region}/${page}`)
-    return result
-  }
-  /**
-  * @returns An array of the player's `brawlhalla_id` and `name`
-  * @param id
-  * @example
-  * ```js
-  * let player = await bh.getPlayerBySteam64ID(76561197996943884)
-  * console.log(player)
-  * // {
-  * // "brawlhalla_id": ...,
-  * // "name": ...
-  * // }
-  * ```
-  */
-  async getPlayerBySteam64ID(id: number|string): Promise<Object> {
+   * @returns An object of the player's stats
+   * @param id the `brawlhalla_id` of the player
+   * @example
+   * ```js
+   * // Get player's stats
+   * let player = await bh.getPlayerStats(1).catch((err) => console.log("Player does not exist!"))
+   * console.log(player)
+   * // {
+   * // "brawlhalla_id": 1,
+   * // ...}
+   * ```
+   */
+  async getPlayerStats(id: number | string): Promise<Object> {
     let result: Object = {};
-    result = await this.get(`search?steamid=${id}`)
-    return result
+    result = await this.get(`player/${id}/stats`);
+    return result;
   }
   /**
-* @param id
-* @example
-* ```js
-* let clan = await bh.getClan(1)
-* console.log(clan)
-* // {
-* // "clan_id": 1,
-* // ...
-* // }
-* ```
-* @returns An object of the clan info
-*/
+   * @returns An object of the player's ranked stats if it exists
+   * @param id the `brawlhalla_id` of the player
+   * @example
+   * ```js
+   * // Get player's ranked stats
+   * let player = await bh.getPlayerRankedStats(1).catch((err) => console.log("Player does not exist!"))
+   * console.log(player)
+   * // {
+   * // "brawlhalla_id": 1,
+   * // ...}
+   * ```
+   */
+  async getPlayerRankedStats(id: number | string): Promise<Object> {
+    let result: Object = {};
+    result = await this.get(`player/${id}/ranked`);
+    return result;
+  }
+  /**
+   * @returns An Array of all matched usernames
+   * @param name
+   * @param region Optional, defaults to `all`, change the region if you wanna get the leaderboard from a different region,
+   * @param page Optional, defaults to 1
+   * @param exact default: `false`. If this value is true, it will return only exact matches, if it is false, it will return partial matches.
+   * @param exactCharCase default: `false`. If this value is true, it will return only exact character case matches, if it is false, it will not check for character case, needs `exact` to be true.
+   * @example
+   * ```js
+   * // Get all players with the name "ChdML"
+   * let players = await bh.getByName("ChdML").catch((err) => console.log("Player does not exist!"))
+   * console.log(players)
+   * // [
+   * // {name: "ChdML", ...},
+   * // {name: "ChdML2"},
+   * // ...]
+   * ```
+   */
+  async getRankedByName(
+    name: string,
+    exact: boolean = false,
+    exactCharCase: boolean = false,
+    page: number = 1,
+    region: string = this.region || 'all'
+  ): Promise<Array<any>> {
+    let result: Array<any> = [];
+    result = await this.get(
+      `rankings/1v1/${region || 'all'}/${page || 1}?name=${name}`
+    );
+    if (exact) {
+      let arr: Array<any> = [];
+      for (let i = 0; i < result.length; i++) {
+        if (
+          exactCharCase
+            ? result[i].name === name
+            : result[i].name.toLowerCase() === name.toLowerCase()
+        ) {
+          arr.push(result[i]);
+        }
+      }
+      result = arr;
+    }
+    return result;
+  }
+  /**
+   * @returns An Array of all the top 1v1 players
+   * @param page default: `1`
+   * @param region default: `all`, change the region if you wanna get the leaderboard from a different region
+   * @example
+   * ```js
+   * // Get page 1 of the leaderboard, if no page was provided it would automatically fetch page 1
+   * let onevoneLeaderboard = await bh.get1v1Rankings().catch((err) => console.log("Error occurred!", err))
+   * console.log(onevoneLeaderboard)
+   * // [
+   * // {rank: 1, ...},
+   * // {rank: 2},
+   * // ...]
+   * ```
+   * @example
+   * ```js
+   * // get page 2
+   * let onevoneLeaderboard2 = await bh.get1v1Rankings(2).catch((err) => console.log("Error occurred!", err))
+   * console.log(onevoneLeaderboard2)
+   * // [
+   * // {rank: 50, ...},
+   * // {rank: 51},
+   * // ...]
+   * ```
+   */
+  async get1v1Rankings(
+    page: number = 1,
+    region: string = this.region || 'all'
+  ): Promise<Array<any>> {
+    let result: Array<any> = [];
+    result = await this.get(`rankings/1v1/${region}/${page}`);
+    return result;
+  }
+  /**
+   * @returns An Array of all the top players
+   * @param mode Required, there's `1v1`, `2v2`, and special rank modes, enter the mode you want to get the leaderboard from.
+   * @param page default: `1`
+   * @param region default: `all`, change the region if you wanna get the leaderboard from a different region
+   * @example
+   * ```js
+   * // Get page 1 of the leaderboard, if no page was provided it would automatically fetch page 1
+   * let kungfootLeaderboard = await bh.getRankings("kungfoot").catch((err) => console.log("Error occurred!", err))
+   * console.log(kungfootLeaderboard)
+   * // [
+   * // {rank: 1, ...},
+   * // {rank: 2},
+   * // ...]
+   * ```
+   * @example
+   * ```js
+   * // get page 2
+   * let kungfootLeaderboard2 = await bh.getRankings("kungfoot").catch((err) => console.log("Error occurred!", err))
+   * console.log(kungfootLeaderboard2)
+   * // [
+   * // {rank: 50, ...},
+   * // {rank: 51},
+   * // ...]
+   * ```
+   */
+  async getRankings(
+    mode: string,
+    page: number = 1,
+    region: string = this.region || 'all'
+  ): Promise<Array<any>> {
+    let result: Array<any> = [];
+    result = await this.get(`rankings/${mode}/${region}/${page}`);
+    return result;
+  }
+  /**
+   * @returns An Array of all the top 2v2 players
+   * @param page default: `1`
+   * @param region default: `all`, change the region if you wanna get the leaderboard from a different region
+   * @example
+   * ```js
+   * // Get page 1 of the leaderboard, if no page was provided it would automatically fetch page 1
+   * let onevoneLeaderboard = await bh.get2v2Rankings().catch((err) => console.log("Error occurred!", err))
+   * console.log(onevoneLeaderboard)
+   * // [
+   * // {rank: 1, ...},
+   * // {rank: 2},
+   * // ...]
+   * ```
+   * @example
+   * ```js
+   * // get page 2
+   * let onevoneLeaderboard2 = await bh.get2v2Rankings(2).catch((err) => console.log("Error occurred!", err))
+   * console.log(onevoneLeaderboard2)
+   * // [
+   * // {rank: 50, ...},
+   * // {rank: 51},
+   * // ...]
+   * ```
+   */
+  async get2v2Rankings(
+    page: number = 1,
+    region: string = this.region || 'all'
+  ): Promise<Array<any>> {
+    let result: Array<any> = [];
+    result = await this.get(`rankings/2v2/${region}/${page}`);
+    return result;
+  }
+  /**
+   * @returns An array of the player's `brawlhalla_id` and `name`
+   * @param id
+   * @example
+   * ```js
+   * let player = await bh.getPlayerBySteam64ID(76561197996943884)
+   * console.log(player)
+   * // {
+   * // "brawlhalla_id": ...,
+   * // "name": ...
+   * // }
+   * ```
+   */
+  async getPlayerBySteam64ID(id: number | string): Promise<Object> {
+    let result: Object = {};
+    result = await this.get(`search?steamid=${id}`);
+    return result;
+  }
+  /**
+   * @param id
+   * @example
+   * ```js
+   * let clan = await bh.getClan(1)
+   * console.log(clan)
+   * // {
+   * // "clan_id": 1,
+   * // ...
+   * // }
+   * ```
+   * @returns An object of the clan info
+   */
   async getClan(id: number): Promise<Object> {
     let result: Object = {};
-    result = await this.get(`clan/${id}`)
-    return result
+    result = await this.get(`clan/${id}`);
+    return result;
   }
   /**
- * @returns An array of all legends
- * @example
- * ```js
- * // Get all legends
- * let legends = await bh.getLegends()
- * console.log(legends)
- * // [{...}, {...}, ...]
- * ```
- */
+   * @returns An array of all legends
+   * @example
+   * ```js
+   * // Get all legends
+   * let legends = await bh.getLegends()
+   * console.log(legends)
+   * // [{...}, {...}, ...]
+   * ```
+   */
   async getLegends(): Promise<Array<any>> {
     let result: Array<any> = [];
-    result = await this.get("legend/all")
-    return result
+    result = await this.get('legend/all');
+    return result;
   }
   /**
-* @returns An object of a legend from the provided id
-* @param id
-* @example
-* ```js
-* let cassidy = await bh.getLegendById(4)
-* console.log(cassidy)
-* // {
-* // "legend_id": 4,
-* // ...
-* // }
-* ```
-*/
-  async getLegendById(id: number|string): Promise<Object> {
+   * @returns An object of a legend from the provided id
+   * @param id
+   * @example
+   * ```js
+   * let cassidy = await bh.getLegendById(4)
+   * console.log(cassidy)
+   * // {
+   * // "legend_id": 4,
+   * // ...
+   * // }
+   * ```
+   */
+  async getLegendById(id: number | string): Promise<Object> {
     let result: Object = {};
-    result = await this.get(`legend/${id}`)
-    return result
+    result = await this.get(`legend/${id}`);
+    return result;
   }
-  /**
+
+    /**
+   * @returns a decoded string/object
+   * @param res the response object from the request
+   * @example
+   * ```js
+   * let decodedRes = await bh.decode({...})
+   * console.log(decodedRes)
+   * // {
+   * // ...
+   * // }
+   * ```
+   */
+    decode(res: any): string|object|unknown {
+    if (typeof res === 'string') {
+      try {
+        return utf8.decode(res);
+      } catch (e) {
+        return e;
+      }
+    }
+  
+    if (res !== null && typeof res === 'object') {
+      Object.keys(res).forEach(key => {
+        res[key] = this.decode(res[key]);
+      });
+      return res;
+    }
+    return res;
+  }
+    /**
    Searches for a legend with the provided name, not really recommended if you know the legend id
  * @returns An object of a legend from the provided name
  * @param name
@@ -306,9 +360,13 @@ async getPlayerRankedStats(id: number|string): Promise<Object> {
   async getLegendByName(name: string): Promise<Object> {
     let result: Object = {};
     let legends = await this.getLegends();
-    let id = legends.find((legend: any) => legend.legend_name_key.toLowerCase() === name.toLowerCase() || legend.bio_name.toLowerCase() === name.toLowerCase())?.legend_id;
-    if (id) result = await this.get(`legend/${id}`)
-    return result
+    let id = legends.find(
+      (legend: any) =>
+        legend.legend_name_key.toLowerCase() === name.toLowerCase() ||
+        legend.bio_name.toLowerCase() === name.toLowerCase()
+    )?.legend_id;
+    if (id) result = await this.get(`legend/${id}`);
+    return result;
   }
   /**
    Get the elo reset value
@@ -321,12 +379,15 @@ async getPlayerRankedStats(id: number|string): Promise<Object> {
  * // 1742
  * ```
  */
-   getEloReset(elo: number): number {
-    let new_elo: number = elo
-    if(elo >= 1400) new_elo = Math.floor(1400 + (elo - 1400.0) / (3.0 - (3000 - elo)/800.0))
-    return new_elo
+  getEloReset(elo: number): number {
+    let new_elo: number = elo;
+    if (elo >= 1400)
+      new_elo = Math.floor(
+        1400 + (elo - 1400.0) / (3.0 - (3000 - elo) / 800.0)
+      );
+    return new_elo;
   }
-    /**
+  /**
    Get the team/legend elo reset value
  * @returns Estimate value of elo on season reset
  * @param elo
@@ -342,11 +403,11 @@ async getPlayerRankedStats(id: number|string): Promise<Object> {
  * // 1583
  * ```
  */
-   getTeamEloReset(elo: number): number {
-    if(elo < 2000) return Math.floor((elo + 375) / 1.5)
-    return Math.floor(1583 + (elo - 2000) / 10)
+  getTeamEloReset(elo: number): number {
+    if (elo < 2000) return Math.floor((elo + 375) / 1.5);
+    return Math.floor(1583 + (elo - 2000) / 10);
   }
-    /**
+  /**
    Get the glory from wins
  * @returns Estimate value of glory from wins on season reset
  * @param wins
@@ -357,12 +418,12 @@ async getPlayerRankedStats(id: number|string): Promise<Object> {
  * // 1340
  * ```
  */
-   getGloryFromWins(wins: number, has_played_10_games: Boolean): number {
-    if(!has_played_10_games) return 0;
+  getGloryFromWins(wins: number, has_played_10_games: Boolean): number {
+    if (!has_played_10_games) return 0;
     if (wins <= 150) return 20 * wins;
-    return Math.floor((10*(45*Math.pow(Math.log10(wins*2),2))) + 245);
+    return Math.floor(10 * (45 * Math.pow(Math.log10(wins * 2), 2)) + 245);
   }
-      /**
+  /**
    Get the glory from best rating
  * @returns Estimate value of glory from wins on season reset
  * @param best_rating
@@ -373,25 +434,24 @@ async getPlayerRankedStats(id: number|string): Promise<Object> {
  * // 3941
  * ```
  */
-   getGloryFromBestRating(best_rating: number): number {
+  getGloryFromBestRating(best_rating: number): number {
     let val: number = 0;
-    if (best_rating < 1200)
-		val = 250;
-	if (best_rating >= 1200 && best_rating < 1286)
-		val =  10 * (25+((0.872093023)*(86-(1286-best_rating))));
-	if (best_rating >= 1286 && best_rating < 1390)
-		val = 10 *(100+((0.721153846)*(104-(1390-best_rating))));
-	if (best_rating >= 1390 && best_rating < 1680)
-		val = 10 *(187+((0.389655172)*(290-(1680-best_rating))));
-	if (best_rating >= 1680 && best_rating < 2000)
-		val = 10 *(300+((0.428125)*(320-(2000-best_rating))));
-	if (best_rating >= 2000 && best_rating < 2300)
-		val = 10 *(437+((0.143333333)*(300-(2300-best_rating))));
-	if (best_rating >= 2300)
-		val = 10 *(480+((0.05)*(400-(2700-best_rating))));
+    if (best_rating < 1200) val = 250;
+    if (best_rating >= 1200 && best_rating < 1286)
+      val = 10 * (25 + 0.872093023 * (86 - (1286 - best_rating)));
+    if (best_rating >= 1286 && best_rating < 1390)
+      val = 10 * (100 + 0.721153846 * (104 - (1390 - best_rating)));
+    if (best_rating >= 1390 && best_rating < 1680)
+      val = 10 * (187 + 0.389655172 * (290 - (1680 - best_rating)));
+    if (best_rating >= 1680 && best_rating < 2000)
+      val = 10 * (300 + 0.428125 * (320 - (2000 - best_rating)));
+    if (best_rating >= 2000 && best_rating < 2300)
+      val = 10 * (437 + 0.143333333 * (300 - (2300 - best_rating)));
+    if (best_rating >= 2300)
+      val = 10 * (480 + 0.05 * (400 - (2700 - best_rating)));
     return Math.floor(val);
   }
-        /**
+  /**
    Get the wins, best rating, and total glory
  * @returns Estimate value of glory from wins on season reset
  * @param best_rating
@@ -408,16 +468,20 @@ async getPlayerRankedStats(id: number|string): Promise<Object> {
  * // }
  * ```
  */
-   getGlory(best_rating: number, wins: number, has_played_10_games: Boolean): Object {
-    let wins_glory: number = this.getGloryFromWins(wins, has_played_10_games)
-    let rating_glory: number = this.getGloryFromBestRating(best_rating)
-    let total_glory: number = wins_glory + rating_glory
+  getGlory(
+    best_rating: number,
+    wins: number,
+    has_played_10_games: Boolean
+  ): Object {
+    let wins_glory: number = this.getGloryFromWins(wins, has_played_10_games);
+    let rating_glory: number = this.getGloryFromBestRating(best_rating);
+    let total_glory: number = wins_glory + rating_glory;
     let glory: Object = {
       wins: wins_glory,
       rating: rating_glory,
-      total: total_glory
-    }
-    return glory
+      total: total_glory,
+    };
+    return glory;
   }
   /**
    Fetch a path using the `https://api.brawlhalla.com` url
@@ -435,16 +499,17 @@ async getPlayerRankedStats(id: number|string): Promise<Object> {
  */
   async get(path: string): Promise<any> {
     let result: any;
-    let url = `https://api.brawlhalla.com/${path}&api_key=${this.API_KEY}`
+    
+    let url = `https://api.brawlhalla.com/${path}&api_key=${this.API_KEY}`;
     const res = await p({
-      'url': url,
-      'parse': 'json',
-      'headers': {
-        'user-agent': this.user_agent
-      }
-    })
-    if(res.body.error) this.handleError(res.body.error.code)
-    else result = res.body
-    return result
+      url: url,
+      parse: 'json',
+      headers: {
+        'user-agent': this.user_agent,
+      },
+    });
+    if (res.body.error) this.handleError(res.body.error.code);
+    else result = res.body;
+    return this.decode(result);
   }
 }
